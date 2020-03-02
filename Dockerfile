@@ -1,10 +1,11 @@
 FROM debian:buster
-RUN apt update && apt install nginx ed -y && \
-apt install php7.3-fpm -y && \
-apt install php7.3-mysqli -y && \
+RUN apt update && apt install nginx -y && \
+apt install php7.3-fpm php7.3-mysqli php7.3-gd -y && \
 apt install libnss3-tools wget -y && \
-apt install mariadb-server mariadb-client -y; \
-mkdir -p /run/php && \
+apt install mariadb-server mariadb-client -y;
+ADD ./srcs/nginx_conf /etc/nginx/sites-enabled/default
+ADD ./srcs/wordpress /var/www/html/wordpress
+RUN mkdir -p /run/php && \
 mkdir -p /var/www/html/wordpress; \
 chown -R www-data:www-data /var/www/html/wordpress
 ADD ./srcs/mariaDB/create_db.sql /home/sql/create_db.sql
@@ -12,8 +13,6 @@ ADD ./srcs/mariaDB/wordpress.sql /home/sql/wordpress.sql
 RUN service mysql start && \
 mysql -u root < /home/sql/create_db.sql; \
 mysql -u root wordpress < /home/sql/wordpress.sql;
-ADD ./srcs/nginx_conf /etc/nginx/sites-enabled/default
-ADD ./srcs/wordpress /var/www/html/wordpress
 RUN cd /tmp && wget https://files.phpmyadmin.net/phpMyAdmin/4.9.4/phpMyAdmin-4.9.4-english.tar.gz; \
 tar xvf phpMyAdmin-4.9.4-english.tar.gz; \
 mv phpMyAdmin-*/ /usr/share/phpmyadmin; \

@@ -5,18 +5,19 @@
 # Before execute edit this values with your container desired name and your desired image tag
 NAME=wordpress
 TAG=ft_server:v1
+VOL_DIR= $(dirname $(pwd)) + "wordpress"
 
 echo -e "\nYour image will have the tag: \e[38;5;208m$TAG \n"
 echo -e "\e[39mand your container will have the name: \e[38;5;208m$NAME\e[39m\n"
 if [ ! -d "../wordpress" ]; then
 	curl -LO https://wordpress.org/latest.tar.gz
-	tar xzvf latest.tar.gz -C ../wordpress
+	tar xzvf latest.tar.gz -C ..
 	rm -f latest.tar.gz
 fi
 echo -e "Image $TAG: "
 if [[ "$(docker image inspect -f='{{.RepoTags}}' $TAG)" == "" ]]; then
 	echo -e "\e[38;5;208mDoesn't exists. \e[39mBuilding...\n"
-	docker build -t=$TAG $PWD
+	docker build -t=$TAG ../../
 	if [ $? -eq 0 ]; then
 		echo -e "\n\n\e[32mBuild successful"
 	else
@@ -32,7 +33,7 @@ if [ ! "$(docker ps -q -f name=$NAME)" ]; then
     fi
 	echo -e "\n\n\e[32mRunning the container..."
     docker run -it -d \
-	-v $PWD/wordpress:/var/www/html/wordpress -p 80:80 -p 443:443 --name=$NAME $TAG
+	-v $VOL_DIR:/var/www/html/wordpress -p 80:80 -p 443:443 --name=$NAME $TAG
 else
 	echo -e "\n\n\e[91mStop and delete the container $NAME to start again"
 	echo -e "\e[39mTo start a new containter run the command:\n"
