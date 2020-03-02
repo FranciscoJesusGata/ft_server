@@ -1,5 +1,5 @@
 #!/bin/bash
-NAME=test_01
-TAG=test:v0.3
+NAME=wordpress
+TAG=ft_server:v1
 docker stop $NAME && docker rm $NAME
 docker rmi $TAG

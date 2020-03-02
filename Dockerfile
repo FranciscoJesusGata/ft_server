@@ -7,13 +7,13 @@ apt install mariadb-server mariadb-client -y; \
 mkdir -p /run/php && \
 mkdir -p /var/www/html/wordpress; \
 chown -R www-data:www-data /var/www/html/wordpress
-ADD ./wordpress_db/create_db.sql /home/sql/create_db.sql
-ADD ./wordpress_db/wordpress.sql /home/sql/wordpress.sql
+ADD ./srcs/mariaDB/create_db.sql /home/sql/create_db.sql
+ADD ./srcs/mariaDB/wordpress.sql /home/sql/wordpress.sql
 RUN service mysql start && \
 mysql -u root < /home/sql/create_db.sql; \
 mysql -u root wordpress < /home/sql/wordpress.sql;
-ADD ./nginx_conf /etc/nginx/sites-enabled/default
-ADD ./wordpress /var/www/html/wordpress
+ADD ./srcs/nginx_conf /etc/nginx/sites-enabled/default
+ADD ./srcs/wordpress /var/www/html/wordpress
 RUN cd /tmp && wget https://files.phpmyadmin.net/phpMyAdmin/4.9.4/phpMyAdmin-4.9.4-english.tar.gz; \
 tar xvf phpMyAdmin-4.9.4-english.tar.gz; \
 mv phpMyAdmin-*/ /usr/share/phpmyadmin; \
